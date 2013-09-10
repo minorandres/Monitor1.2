@@ -232,16 +232,20 @@ CREATE OR REPLACE PROCEDURE TIEMPO_LLENADO
 /
 
 
+CREATE OR REPLACE PROCEDURE trabajo(hora in VARCHAR2)--FORMATO 12.00.00PM
+IS
 BEGIN
+dbms_scheduler.drop_job('MANTENIMIENTO_DBA', TRUE);
 DBMS_SCHEDULER.CREATE_JOB(job_name        => 'MANTENIMIENTO_DBA',
                           job_type        => 'PLSQL_BLOCK',
                           JOB_ACTION      => 'BEGIN REGISTRAR; END;',
-                          start_date      => '10-SEP-13 03.22.00AM',
+                          start_date      => '10-SEP-13 '||hora,
                           repeat_interval => 'FREQ=DAILY;',
                           end_date        => NULL,
                           enabled         => TRUE,
                           comments        => 'Calls PLSQL once');
 END;
 /
+
 
 --exec dbms_scheduler.drop_job('MANTENIMIENTO_DBA', TRUE);
