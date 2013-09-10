@@ -1,0 +1,23 @@
+SELECT datafile.tablespace_name "TableSpace",usado "usado",
+		(datafile.total - t.usado) "libre",datafile.total "total"
+         ,(100*((datafile.total - t.usado)/datafile.total)) "% libre" 
+		 FROM (SELECT tablespace_name,(SUM(bytes)/1048576) total
+         FROM dba_data_files GROUP BY tablespace_name) datafile,
+		(SELECT (SUM(bytes)/(1048576)) usado,tablespace_name
+		FROM dba_segments GROUP BY tablespace_name) t
+		WHERE datafile.tablespace_name=t.tablespace_name;
+		
+SELECT datafile.tablespace_name "TableSpace",usado "usado",
+		(datafile.total - t.usado) "libre" ,datafile.total "total" 
+		,(100*((datafile.total - t.usado)/datafile.total)) "% libre" 
+		FROM (SELECT tablespace_name,(SUM(bytes)/1048576) total 
+		FROM dba_data_files GROUP BY tablespace_name) datafile,
+		(SELECT (SUM(bytes)/(1048576)) usado,tablespace_name 
+		FROM dba_segments GROUP BY tablespace_name) t 
+		WHERE datafile.tablespace_name=t.tablespace_name;
+		
+SQL>SPOOL /tmp/mydata.dat
+
+SQL>select myfield from userDB where IMSI like '22803%' and rownum < 11;
+
+SQL>SPOOL OFF
