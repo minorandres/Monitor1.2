@@ -1,4 +1,20 @@
-set serveroutput on;	
+/*
+-----> ESTE SCRIPT DEBE SER EJECUTADO BAJO EL SYSDBA PARA SU CORRECTO
+        FUNCIONAMIENTO.
+        connect system as sysdba
+        root --- borrar tam max tabla c/ vez de java
+*/
+
+
+set serveroutput on;
+alter user SYS identified by root;
+connect sys as sysdba;
+root;	
+
+DROP TABLE REGISTROS;
+DROP TABLE ERROR;
+DROP TABLE LLENADO;
+DROP TABLE TAM_MAX_TABLA;
 
 CREATE TABLE REGISTROS(
 	tabla varchar2(500),
@@ -13,7 +29,7 @@ CREATE TABLE REGISTROS(
 -- CONSULTA PARA OBTENER DATOS: SELECT * FROM REGISTROS ORDER BY TABLA,FECHA;
 
 CREATE TABLE ERROR(
-    DESCRIPCION VARCHAR2(1000);
+    DESCRIPCION VARCHAR2(1000)
 );
 
 CREATE TABLE LLENADO( --- TABLA FINAL TIEMPO RESTANTE EN DIAS P/llenarse
@@ -27,7 +43,6 @@ CREATE TABLE TAM_MAX_TABLA(
 	TABLESPACE VARCHAR2(500)
 	);
 
- 
  --algunas tablas tienen el num_rows vacio que es necesario para hacer la estimacion de crecimiento, este proceso hace que aparezcan  
 CREATE OR REPLACE PROCEDURE DESBLOQUEAR_ESTADISTICAS
 	IS 	
@@ -131,7 +146,7 @@ CREATE OR REPLACE PROCEDURE CALC_TABLESPACE(ESPACIO IN VARCHAR2)
 		query VARCHAR2(500);
 		r NUMBER;
 	BEGIN
-		SELECT SUM(tam) INTO suma FROM TAM_MAX_TABLA WHERE TABLESPACE=ESPACIO;
+		SELECT SUM(dias) INTO suma FROM TAM_MAX_TABLA WHERE TABLESPACE=ESPACIO;
 		SELECT COUNT(*) INTO contador FROM TAM_MAX_TABLA WHERE TABLESPACE=ESPACIO;--N tablas
 		IF contador > 0 THEN -- hay tablespace sin actividad de ningun tipo
 			r:=ROUND((SUMA/contador));		
@@ -233,18 +248,18 @@ CREATE OR REPLACE PROCEDURE TIEMPO_LLENADO
 
 
 CREATE OR REPLACE PROCEDURE trabajo(hora in VARCHAR2)--FORMATO 12.00.00PM
-IS
-BEGIN
-dbms_scheduler.drop_job('MANTENIMIENTO_DBA', TRUE);
-DBMS_SCHEDULER.CREATE_JOB(job_name        => 'MANTENIMIENTO_DBA',
-                          job_type        => 'PLSQL_BLOCK',
-                          JOB_ACTION      => 'BEGIN REGISTRAR; END;',
-                          start_date      => '10-SEP-13 '||hora,
-                          repeat_interval => 'FREQ=DAILY;',
-                          end_date        => NULL,
-                          enabled         => TRUE,
-                          comments        => 'Calls PLSQL once');
-END;
+    IS
+    BEGIN
+        dbms_scheduler.drop_job('MANTENIMIENTO_DBA', TRUE);
+        DBMS_SCHEDULER.CREATE_JOB(job_name        => 'MANTENIMIENTO_DBA',
+                                  job_type        => 'PLSQL_BLOCK',
+                                  JOB_ACTION      => 'BEGIN REGISTRAR; END;',
+                                  start_date      => '10-SEP-13 '||hora,
+                                  repeat_interval => 'FREQ=DAILY;',
+                                  end_date        => NULL,
+                                  enabled         => TRUE,
+                                  comments        => 'Calls PLSQL once');
+    END;
 /
 
 

@@ -4,6 +4,7 @@
  */
 package BD;
 
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -147,5 +148,32 @@ public class ConectorSQL {
              Logger.getLogger(ConectorSQL.class.getName()).log(Level.SEVERE, null, ex);
          }         
              return datos;     
-     }   
+     } 
+     
+      public String getTiempoLlenado(String tableSpace){
+          String  s="";
+          try {
+          CallableStatement cs = conexion.prepareCall(
+                 "{call registrar}");
+           cs.execute();    // AQUI  DURA 5 MIN APROX 
+           cs = conexion.prepareCall(
+                 "{call TIEMPO_LLENADO}");
+           cs.execute();             
+            stmt = conexion.createStatement();
+            s="SELECT * FROM LLENADOS";            
+              try (ResultSet resultados = stmt.executeQuery(s)) {
+                  s="";
+                 while ( resultados.next() ) {
+                    String  segmento = resultados.getString("SEGMENT_NAME");
+                    String tam= resultados.getString("TAM");
+                    System.out.println(segmento+","+tam);
+                    s+=segmento+","+tam+"\n";
+                 }
+             }
+             stmt.close();
+         } catch (SQLException ex) {
+             Logger.getLogger(ConectorSQL.class.getName()).log(Level.SEVERE, null, ex);
+         }         
+             return s;  
+     }
 }
