@@ -83,8 +83,8 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         jTable1 = new javax.swing.JTable();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
-        itemSalir = new javax.swing.JMenuItem();
         jMenuItem1 = new javax.swing.JMenuItem();
+        itemSalir = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
         itemPreferencias = new javax.swing.JMenuItem();
 
@@ -126,7 +126,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
 
         jLabel3.setText("Gráfica de espacio del tablespace");
 
-        Capas.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED, java.awt.Color.white, new java.awt.Color(153, 153, 153), java.awt.Color.darkGray, java.awt.Color.lightGray));
+        Capas.setBorder(new javax.swing.border.SoftBevelBorder(0, java.awt.Color.white, new java.awt.Color(153, 153, 153), java.awt.Color.darkGray, java.awt.Color.lightGray));
 
         javax.swing.GroupLayout barrasLayout = new javax.swing.GroupLayout(barras);
         barras.setLayout(barrasLayout);
@@ -157,7 +157,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
 
         jLabel2.setText("Gráfico del tablespace");
 
-        Capas1.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED, java.awt.Color.white, new java.awt.Color(153, 153, 153), java.awt.Color.darkGray, java.awt.Color.lightGray));
+        Capas1.setBorder(new javax.swing.border.SoftBevelBorder(0, java.awt.Color.white, new java.awt.Color(153, 153, 153), java.awt.Color.darkGray, java.awt.Color.lightGray));
 
         javax.swing.GroupLayout pastelLayout = new javax.swing.GroupLayout(pastel);
         pastel.setLayout(pastelLayout);
@@ -270,6 +270,14 @@ public class VentanaPrincipal extends javax.swing.JFrame {
 
         jMenu1.setText("Archivo");
 
+        jMenuItem1.setText("Exportar (.csv)");
+        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem1ActionPerformed(evt);
+            }
+        });
+        jMenu1.add(jMenuItem1);
+
         itemSalir.setText("Salir");
         itemSalir.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -277,9 +285,6 @@ public class VentanaPrincipal extends javax.swing.JFrame {
             }
         });
         jMenu1.add(itemSalir);
-
-        jMenuItem1.setText("jMenuItem1");
-        jMenu1.add(jMenuItem1);
 
         jMenuBar1.add(jMenu1);
 
@@ -337,6 +342,10 @@ public class VentanaPrincipal extends javax.swing.JFrame {
 
     private void formWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosed
     }//GEN-LAST:event_formWindowClosed
+
+    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+        exportarCSV();
+    }//GEN-LAST:event_jMenuItem1ActionPerformed
 
     /**
      * @param args the command line arguments
