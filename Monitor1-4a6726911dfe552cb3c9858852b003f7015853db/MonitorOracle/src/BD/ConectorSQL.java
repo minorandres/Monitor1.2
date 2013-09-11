@@ -7,6 +7,7 @@ package BD;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -52,11 +53,13 @@ public class ConectorSQL {
         } else{            
             System.out.println("Conexion BD exitosa");//getTableSpaces();
         }
+        //tomarEstadisticas();// APROX 5 MIN DEBE SER PRIMER METODO EN LLAMARSE
         getInfoTableSpaces();
         getObjetosEnTableSpace("ACADEMICO");// parametro es el nombre dl ts
         return true;
     }
 
+     // METODO PARA HISTORICO CSV
      public String getInfoTablaRegistro(){
          String query = "SELECT tabla,tablespace,fecha,total_registros,"
                  + "tamanio_total_mb,nuevos_registros FROM REGISTROS "
@@ -152,22 +155,16 @@ public class ConectorSQL {
      
       public String getTiempoLlenado(String tableSpace){
           String  s="";
-          try {
-          CallableStatement cs = conexion.prepareCall(
-                 "{call registrar}");
-           cs.execute();    // AQUI  DURA 5 MIN APROX 
-           cs = conexion.prepareCall(
-                 "{call TIEMPO_LLENADO}");
-           cs.execute();             
+          PreparedStatement preparar = null;
+          try {          
             stmt = conexion.createStatement();
-            s="SELECT * FROM LLENADOS";            
+            s="SELECT DIAS FROM LLENADO WHERE TABLESPACE="+"'"+tableSpace+"'";  
               try (ResultSet resultados = stmt.executeQuery(s)) {
                   s="";
                  while ( resultados.next() ) {
-                    String  segmento = resultados.getString("SEGMENT_NAME");
-                    String tam= resultados.getString("TAM");
-                    System.out.println(segmento+","+tam);
-                    s+=segmento+","+tam+"\n";
+                    String dias= resultados.getString("DIAS");
+                    System.out.println(tableSpace+","+dias);
+                    s+=dias+"\n";
                  }
              }
              stmt.close();
@@ -176,4 +173,17 @@ public class ConectorSQL {
          }         
              return s;  
      }
+
+    private void tomarEstadisticas() {
+         try {
+          CallableStatement cs = conexion.prepareCall(
+                 "{call registrar}");
+           cs.execute();    // AQUI  DURA 5 MIN APROX 
+           cs = conexion.prepareCall(
+                 "{call TIEMPO_LLENADO}");
+           cs.execute();   
+           } catch (SQLException ex) {
+             Logger.getLogger(ConectorSQL.class.getName()).log(Level.SEVERE, null, ex);
+         }         
+    }
 }

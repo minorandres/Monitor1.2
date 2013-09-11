@@ -13,6 +13,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
+import javax.swing.JTable;
 import static javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE;
 import javax.swing.table.DefaultTableModel;
 import org.jfree.chart.ChartFactory;
@@ -29,6 +30,7 @@ import org.jfree.data.general.DefaultPieDataset;
  * @author Diego
  */
 public class VentanaPrincipal extends javax.swing.JFrame {
+    private JTable jTable2;
 
     /**
      * Creates new form VentanaPrincipal
@@ -126,7 +128,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
 
         jLabel3.setText("Gráfica de espacio del tablespace");
 
-        Capas.setBorder(new javax.swing.border.SoftBevelBorder(0, java.awt.Color.white, new java.awt.Color(153, 153, 153), java.awt.Color.darkGray, java.awt.Color.lightGray));
+        Capas.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED, java.awt.Color.white, new java.awt.Color(153, 153, 153), java.awt.Color.darkGray, java.awt.Color.lightGray));
 
         javax.swing.GroupLayout barrasLayout = new javax.swing.GroupLayout(barras);
         barras.setLayout(barrasLayout);
@@ -157,7 +159,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
 
         jLabel2.setText("Gráfico del tablespace");
 
-        Capas1.setBorder(new javax.swing.border.SoftBevelBorder(0, java.awt.Color.white, new java.awt.Color(153, 153, 153), java.awt.Color.darkGray, java.awt.Color.lightGray));
+        Capas1.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED, java.awt.Color.white, new java.awt.Color(153, 153, 153), java.awt.Color.darkGray, java.awt.Color.lightGray));
 
         javax.swing.GroupLayout pastelLayout = new javax.swing.GroupLayout(pastel);
         pastel.setLayout(pastelLayout);
@@ -255,11 +257,11 @@ public class VentanaPrincipal extends javax.swing.JFrame {
 
             },
             new String [] {
-                "Tablespace", "Usado (Mb)", "Libre (Mb)", "Total (Mb)", "% Usado"
+                "Tablespace", "% Usado", "Tiempo Estimado"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
+                java.lang.String.class, java.lang.String.class, java.lang.String.class
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -394,6 +396,23 @@ public class VentanaPrincipal extends javax.swing.JFrame {
                 SalirPrograma();
             }
         });
+        jTable2 = new javax.swing.JTable();
+        jTable2.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Tablespace", "Usado (Mb)", "Libre (Mb)", "Total (Mb)", "% Usado"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+        }); 
         initComponents();
         addtablespaceInfoToTable();
         GraficaPastel();
@@ -412,8 +431,8 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         String Producto3 = "Usado";
         
         ArrayList<String> tablespaces=new ArrayList<>();
-        for(int i=0;i<jTable1.getRowCount();i++){
-        tablespaces.add((String)jTable1.getValueAt(i, 0));
+        for(int i=0;i<jTable2.getRowCount();i++){
+        tablespaces.add((String)jTable2.getValueAt(i, 0));
         }
 /*        String Dia1 = "Día 1";
         String Dia2 = "Día 2";
@@ -421,14 +440,14 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         String Dia4 = "Día 4";
 */
        
-         for(int i=0;i<jTable1.getRowCount();i++){
-        data.addValue(Float.parseFloat((String)jTable1.getValueAt(i, 3)), Producto1, (String)jTable1.getValueAt(i, 0));
+         for(int i=0;i<jTable2.getRowCount();i++){
+        data.addValue(Float.parseFloat((String)jTable2.getValueAt(i, 3)), Producto1, (String)jTable2.getValueAt(i, 0));
         }
-         for(int i=0;i<jTable1.getRowCount();i++){
-        data.addValue(Float.parseFloat((String)jTable1.getValueAt(i, 2)), Producto2, (String)jTable1.getValueAt(i, 0));
+         for(int i=0;i<jTable2.getRowCount();i++){
+        data.addValue(Float.parseFloat((String)jTable2.getValueAt(i, 2)), Producto2, (String)jTable2.getValueAt(i, 0));
         }
-         for(int i=0;i<jTable1.getRowCount();i++){
-        data.addValue(Float.parseFloat((String)jTable1.getValueAt(i, 1)), Producto3, (String)jTable1.getValueAt(i, 0));
+         for(int i=0;i<jTable2.getRowCount();i++){
+        data.addValue(Float.parseFloat((String)jTable2.getValueAt(i, 1)), Producto3, (String)jTable2.getValueAt(i, 0));
         }
     
        /*
@@ -508,11 +527,13 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     public void addtablespaceInfoToTable() {
         String[] filas = Conector.conectorBD.getInfoTableSpaces().split("\n");
         String[] columnas;
-        DefaultTableModel modelo = (DefaultTableModel) jTable1.getModel();
+        DefaultTableModel modelo = (DefaultTableModel) jTable2.getModel();
+        DefaultTableModel modelo1 = (DefaultTableModel) jTable1.getModel();
         for (String fila : filas) {
             columnas = fila.split(",");
             //                          tablespace+","+usado+","+libre+","+total+","+%libre+"\n";
             modelo.addRow(new Object[]{columnas[0], columnas[1], columnas[2], columnas[3], columnas[4], null, null});//columnas[2],columnas[3]});
+            modelo1.addRow(new Object[]{columnas[0],columnas[4],Conector.conectorBD.getTiempoLlenado(columnas[0])});
         }
 
     }
